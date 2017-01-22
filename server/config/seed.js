@@ -6,6 +6,7 @@
 'use strict';
 import Thing from '../api/thing/thing.model';
 import User from '../api/user/user.model';
+import Asset from '../api/asset/asset.model';
 
 Thing.find({}).remove()
   .then(() => {
@@ -55,5 +56,32 @@ User.find({}).remove()
     })
     .then(() => {
       console.log('finished populating users');
+    });
+  });
+
+  Asset.find({}).remove()
+  .then(() => {
+    Asset.create({
+			data:{location:"Riverside",signText:'Stop',image:'1',lat:'30.639117',lon:'-96.4678'},
+			tag:{epcVal:'0xe200210020005b4d153e0272'}
+		},
+		{
+			data:{location:"Riverside",signText:'Stop',image:'2',lat:'30.638895',lon:'-96.4676'},
+			tag:{epcVal:'0xe2002100200050ce15100272'}
+		},
+		{
+			data:{location:"Riverside",signText:'Street: Bryan Rd',image:'3',lat:'30.638921',lon:'-96.4678'},
+			tag:{epcVal:'0xe200210020005311147b0272'}
+		},
+		{
+			data:{location:"Riverside",signText:'Street: Bryan Rd',image:'4',lat:'30.637929',lon:'-96.4678'},
+			tag:{epcVal:'0xe20021002000545915620272'}
+		},
+		{
+			data:{location:"Riverside",signText:'Street: Sixth St',image:'5',lat:'30.637929',lon:'-96.4678'},
+			tag:{epcVal:'0xe200210020005b45153c0272'}
+		})
+    .then(() => {
+      console.log('finished populating assets');
     });
   });
