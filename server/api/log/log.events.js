@@ -10,7 +10,7 @@ var LogEvents = new EventEmitter();
 
 // Set max event listeners (0 == unlimited)
 LogEvents.setMaxListeners(0);
-
+/*
 // Model events
 var events = {
   save: 'save',
@@ -28,6 +28,6 @@ function emitEvent(event) {
     LogEvents.emit(event + ':' + doc._id, doc);
     LogEvents.emit(event, doc);
   };
-}
+}*/
 
 export default LogEvents;

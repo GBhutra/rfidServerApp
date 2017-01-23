@@ -10,7 +10,7 @@ var AssetEvents = new EventEmitter();
 
 // Set max event listeners (0 == unlimited)
 AssetEvents.setMaxListeners(0);
-
+/*
 // Model events
 var events = {
   save: 'save',
@@ -28,6 +28,6 @@ function emitEvent(event) {
     AssetEvents.emit(event + ':' + doc._id, doc);
     AssetEvents.emit(event, doc);
   };
-}
+}*/
 
 export default AssetEvents;
