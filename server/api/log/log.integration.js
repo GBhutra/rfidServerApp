@@ -3,27 +3,34 @@
 /* globals describe, expect, it, beforeEach, afterEach */
 
 var app = require('../..');
+import Log from './log.model';
+import User from '../user/user.model';
 import request from 'supertest';
 
 var newLog;
-var token;
 
 describe('Log API:', function() {
-  describe('GET /api/logs', function() {
-    var logs;
+  var user;
+  var token;
 
-    before(function() {
+  // Clear users before testing
+  before(function() {
     return User.remove().then(function() {
       user = new User({
         name: 'Fake User',
         email: 'test@example.com',
+        role: 'admin',
         password: 'password'
       });
 
       return user.save();
     });
-    //Logging in creating and getting the token
-    request(app)
+  });
+
+  // Get the authentication token
+  before(function(done) {
+      Log.remove();
+      request(app)
         .post('/auth/local')
         .send({
           email: 'test@example.com',
@@ -35,9 +42,16 @@ describe('Log API:', function() {
           token = res.body.token;
           done();
         });
-      }
     });
 
+  // Clear users after testing
+  after(function() {
+    return User.remove();
+  });
+
+  describe('GET /api/logs', function() {
+    var logs;
+    
     beforeEach(function(done) {
       request(app)
         .get('/api/logs')
@@ -112,17 +126,17 @@ describe('Log API:', function() {
     });
   });
 
-/*
-* Logs are not editable !
+
   describe('PUT /api/logs/:id', function() {
     var updatedLog;
 
     beforeEach(function(done) {
       request(app)
         .put(`/api/logs/${newLog._id}`)
+        .set('authorization', `Bearer ${token}`)
         .send({
-          name: 'Updated Log',
-          info: 'This is the updated log!!!'
+          "tag":{"epcVal":"0xe200210020005b4d153e0272"},
+          "logData":{"location":"Riverside","signText":"Stop","lat":"30.639117","lon":"-96.4678","date":"","readCount":"6"}
         })
         .expect(200)
         .expect('Content-Type', /json/)
@@ -140,13 +154,14 @@ describe('Log API:', function() {
     });
 
     it('should respond with the updated log', function() {
-      expect(updatedLog.name).to.equal('Updated Log');
-      expect(updatedLog.info).to.equal('This is the updated log!!!');
+      expect(updatedLog.logData.readCount).to.equal(6);
+      expect(updatedLog.tag.epcVal).to.equal('0xe200210020005b4d153e0272');
     });
 
     it('should respond with the updated log on a subsequent GET', function(done) {
       request(app)
         .get(`/api/logs/${newLog._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -155,8 +170,8 @@ describe('Log API:', function() {
           }
           let log = res.body;
 
-          expect(log.name).to.equal('Updated Log');
-          expect(log.info).to.equal('This is the updated log!!!');
+          expect(log.logData.readCount).to.equal(6);
+          expect(log.tag.epcVal).to.equal('0xe200210020005b4d153e0272');
 
           done();
         });
@@ -170,9 +185,9 @@ describe('Log API:', function() {
       request(app)
         .patch(`/api/logs/${newLog._id}`)
         .send([
-          { op: 'replace', path: '/name', value: 'Patched Log' },
-          { op: 'replace', path: '/info', value: 'This is the patched log!!!' }
+          { op: 'replace', path: '/logData/signText', value: 'YIELD' }
         ])
+        .set('authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function(err, res) {
@@ -189,8 +204,7 @@ describe('Log API:', function() {
     });
 
     it('should respond with the patched log', function() {
-      expect(patchedLog.name).to.equal('Patched Log');
-      expect(patchedLog.info).to.equal('This is the patched log!!!');
+      expect(patchedLog.logData.signText).to.equal('YIELD');
     });
   });
 
@@ -198,6 +212,7 @@ describe('Log API:', function() {
     it('should respond with 204 on successful removal', function(done) {
       request(app)
         .delete(`/api/logs/${newLog._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(204)
         .end(err => {
           if(err) {
@@ -210,6 +225,7 @@ describe('Log API:', function() {
     it('should respond with 404 when log does not exist', function(done) {
       request(app)
         .delete(`/api/logs/${newLog._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(404)
         .end(err => {
           if(err) {
@@ -218,5 +234,5 @@ describe('Log API:', function() {
           done();
         });
     });
-  });*/
+  });
 });

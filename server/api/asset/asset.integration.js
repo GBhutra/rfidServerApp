@@ -3,16 +3,17 @@
 /* globals describe, expect, it, beforeEach, afterEach */
 
 var app = require('../..');
+import User from '../user/user.model';
 import request from 'supertest';
 
 var newAsset;
-var token;
 
 describe('Asset API:', function(done) {
-  describe('GET /api/assets', function() {
-    var assets;
+  var user;
+  var token;
 
-    before(function() {
+  // Clear users before testing
+  before(function() {
     return User.remove().then(function() {
       user = new User({
         name: 'Fake User',
@@ -22,8 +23,11 @@ describe('Asset API:', function(done) {
 
       return user.save();
     });
-    //Logging in creating and getting the token
-    request(app)
+  });
+
+  // Get the token
+  before(function(done) {
+      request(app)
         .post('/auth/local')
         .send({
           email: 'test@example.com',
@@ -35,9 +39,31 @@ describe('Asset API:', function(done) {
           token = res.body.token;
           done();
         });
-      }
     });
 
+  // Clear users after testing
+  after(function() {
+    return User.remove();
+  });
+
+
+  describe('GET /api/assets', function() {
+    var assets;
+    beforeEach(function(done) {
+      request(app)
+        .get('/api/assets')
+        .set('authorization', `Bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          if(err) {
+            return done(err);
+          }
+          assets = res.body;
+          done();
+        });
+    });
+    
     it('should respond with JSON array', function() {
       expect(assets).to.be.instanceOf(Array);
     });
@@ -180,8 +206,8 @@ describe('Asset API:', function(done) {
   describe('DELETE /api/assets/:id', function() {
     it('should respond with 204 on successful removal', function(done) {
       request(app)
-        .set('authorization', `Bearer ${token}`)
         .delete(`/api/assets/${newAsset._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(204)
         .end(err => {
           if(err) {

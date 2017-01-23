@@ -47,7 +47,7 @@ describe('Log API Router:', function() {
   });
 
   describe('GET /api/logs', function() {
-    it('should be authenticated route to log.controller.index', function() {
+    it('should verify authentication and route to log.controller.index', function() {
       expect(routerStub.get
         .withArgs('/', 'authService.isAuthenticated', 'logCtrl.index')
         ).to.have.been.calledOnce;
@@ -55,7 +55,7 @@ describe('Log API Router:', function() {
   });
 
   describe('GET /api/logs/:id', function() {
-    it('should be authenticated route to log.controller.show', function() {
+    it('should verify authentication and route to log.controller.show', function() {
       expect(routerStub.get
         .withArgs('/:id', 'authService.isAuthenticated', 'logCtrl.show')
         ).to.have.been.calledOnce;
@@ -63,36 +63,35 @@ describe('Log API Router:', function() {
   });
 
   describe('POST /api/logs', function() {
-    it('should be authenticated route to log.controller.create', function() {
+    it('should verify authentication and route to log.controller.create', function() {
       expect(routerStub.post
         .withArgs('/', 'authService.isAuthenticated', 'logCtrl.create')
         ).to.have.been.calledOnce;
     });
   });
 
-  /*
   describe('PUT /api/logs/:id', function() {
-    it('should route to log.controller.upsert', function() {
+    it('should verify admin role and route to log.controller.upsert ', function() {
       expect(routerStub.put
-        .withArgs('/:id', 'logCtrl.upsert')
+        .withArgs('/:id', 'authService.hasRole.admin', 'logCtrl.upsert')
         ).to.have.been.calledOnce;
     });
   });
 
   describe('PATCH /api/logs/:id', function() {
-    it('should route to log.controller.patch', function() {
+    it('should verify admin role and route to log.controller.patch', function() {
       expect(routerStub.patch
-        .withArgs('/:id', 'logCtrl.patch')
+        .withArgs('/:id', 'authService.hasRole.admin', 'logCtrl.patch')
         ).to.have.been.calledOnce;
     });
   });
 
   describe('DELETE /api/logs/:id', function() {
-    it('should route to log.controller.destroy', function() {
+    it('should verify admin role and route to log.controller.destroy', function() {
       expect(routerStub.delete
-        .withArgs('/:id', 'logCtrl.destroy')
+        .withArgs('/:id', 'authService.hasRole.admin', 'logCtrl.destroy')
         ).to.have.been.calledOnce;
     });
-  });*/
+  });
 
 });
