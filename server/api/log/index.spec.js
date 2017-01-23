@@ -21,6 +21,15 @@ var routerStub = {
   delete: sinon.spy()
 };
 
+var authServiceStub = {
+  isAuthenticated() {
+    return 'authService.isAuthenticated';
+  },
+  hasRole(role) {
+    return `authService.hasRole.${role}`;
+  }
+};
+
 // require the index with our stubbed out modules
 var logIndex = proxyquire('./index.js', {
   express: {
@@ -28,7 +37,8 @@ var logIndex = proxyquire('./index.js', {
       return routerStub;
     }
   },
-  './log.controller': logCtrlStub
+  './log.controller': logCtrlStub,
+  '../../auth/auth.service': authServiceStub
 });
 
 describe('Log API Router:', function() {
@@ -37,29 +47,30 @@ describe('Log API Router:', function() {
   });
 
   describe('GET /api/logs', function() {
-    it('should route to log.controller.index', function() {
+    it('should be authenticated route to log.controller.index', function() {
       expect(routerStub.get
-        .withArgs('/', 'logCtrl.index')
+        .withArgs('/', 'authService.isAuthenticated', 'logCtrl.index')
         ).to.have.been.calledOnce;
     });
   });
 
   describe('GET /api/logs/:id', function() {
-    it('should route to log.controller.show', function() {
+    it('should be authenticated route to log.controller.show', function() {
       expect(routerStub.get
-        .withArgs('/:id', 'logCtrl.show')
+        .withArgs('/:id', 'authService.isAuthenticated', 'logCtrl.show')
         ).to.have.been.calledOnce;
     });
   });
 
   describe('POST /api/logs', function() {
-    it('should route to log.controller.create', function() {
+    it('should be authenticated route to log.controller.create', function() {
       expect(routerStub.post
-        .withArgs('/', 'logCtrl.create')
+        .withArgs('/', 'authService.isAuthenticated', 'logCtrl.create')
         ).to.have.been.calledOnce;
     });
   });
 
+  /*
   describe('PUT /api/logs/:id', function() {
     it('should route to log.controller.upsert', function() {
       expect(routerStub.put
@@ -82,5 +93,6 @@ describe('Log API Router:', function() {
         .withArgs('/:id', 'logCtrl.destroy')
         ).to.have.been.calledOnce;
     });
-  });
+  });*/
+
 });

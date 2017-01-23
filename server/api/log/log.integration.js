@@ -6,14 +6,42 @@ var app = require('../..');
 import request from 'supertest';
 
 var newLog;
+var token;
 
 describe('Log API:', function() {
   describe('GET /api/logs', function() {
     var logs;
 
+    before(function() {
+    return User.remove().then(function() {
+      user = new User({
+        name: 'Fake User',
+        email: 'test@example.com',
+        password: 'password'
+      });
+
+      return user.save();
+    });
+    //Logging in creating and getting the token
+    request(app)
+        .post('/auth/local')
+        .send({
+          email: 'test@example.com',
+          password: 'password'
+        })
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          token = res.body.token;
+          done();
+        });
+      }
+    });
+
     beforeEach(function(done) {
       request(app)
         .get('/api/logs')
+        .set('authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -34,6 +62,7 @@ describe('Log API:', function() {
     beforeEach(function(done) {
       request(app)
         .post('/api/logs')
+        .set('authorization', `Bearer ${token}`)
         .send({
           "tag":{"epcVal":"0xe200210020005b4d153e0272"},
           "logData":{"location":"Riverside","signText":"Stop","lat":"30.639117","lon":"-96.4678","date":"","readCount":"5"}
@@ -61,6 +90,7 @@ describe('Log API:', function() {
     beforeEach(function(done) {
       request(app)
         .get(`/api/logs/${newLog._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {

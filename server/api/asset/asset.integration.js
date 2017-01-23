@@ -6,23 +6,36 @@ var app = require('../..');
 import request from 'supertest';
 
 var newAsset;
+var token;
 
-describe('Asset API:', function() {
+describe('Asset API:', function(done) {
   describe('GET /api/assets', function() {
     var assets;
 
-    beforeEach(function(done) {
-      request(app)
-        .get('/api/assets')
+    before(function() {
+    return User.remove().then(function() {
+      user = new User({
+        name: 'Fake User',
+        email: 'test@example.com',
+        password: 'password'
+      });
+
+      return user.save();
+    });
+    //Logging in creating and getting the token
+    request(app)
+        .post('/auth/local')
+        .send({
+          email: 'test@example.com',
+          password: 'password'
+        })
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-          if(err) {
-            return done(err);
-          }
-          assets = res.body;
+          token = res.body.token;
           done();
         });
+      }
     });
 
     it('should respond with JSON array', function() {
@@ -34,6 +47,7 @@ describe('Asset API:', function() {
     beforeEach(function(done) {
       request(app)
         .post('/api/assets')
+        .set('authorization', `Bearer ${token}`)
         .send({
           "data":{"location":"Riverside","signText":"Stop","image":"1","lat":"30.639117","lon":"-96.4678"},
           "tag":{"epcVal":"0xe200210020005b4d153e0272"}
@@ -60,6 +74,7 @@ describe('Asset API:', function() {
     beforeEach(function(done) {
       request(app)
         .get(`/api/assets/${newAsset._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -86,6 +101,7 @@ describe('Asset API:', function() {
     beforeEach(function(done) {
       request(app)
         .put(`/api/assets/${newAsset._id}`)
+        .set('authorization', `Bearer ${token}`)
         .send({
           "data":{"location":"Riverside123","signText":"Stop","image":"1","lat":"30.639117","lon":"-96.4678"},
           "tag":{"epcVal":"0xe200210020005b4d153e0272"}
@@ -113,6 +129,7 @@ describe('Asset API:', function() {
     it('should respond with the updated asset on a subsequent GET', function(done) {
       request(app)
         .get(`/api/assets/${newAsset._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -135,6 +152,7 @@ describe('Asset API:', function() {
     beforeEach(function(done) {
       request(app)
         .patch(`/api/assets/${newAsset._id}`)
+        .set('authorization', `Bearer ${token}`)
         .send([
           { op: 'replace', path: '/data/signText', value: 'YIELD' }
         ])
@@ -162,6 +180,7 @@ describe('Asset API:', function() {
   describe('DELETE /api/assets/:id', function() {
     it('should respond with 204 on successful removal', function(done) {
       request(app)
+        .set('authorization', `Bearer ${token}`)
         .delete(`/api/assets/${newAsset._id}`)
         .expect(204)
         .end(err => {
@@ -175,6 +194,7 @@ describe('Asset API:', function() {
     it('should respond with 404 when asset does not exist', function(done) {
       request(app)
         .delete(`/api/assets/${newAsset._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(404)
         .end(err => {
           if(err) {
