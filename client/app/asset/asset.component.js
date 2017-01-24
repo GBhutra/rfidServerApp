@@ -5,10 +5,20 @@ const uiRouter = require('angular-ui-router');
 
 import routes from './asset.routes';
 
-export class AssetComponent {
+export class AssetController {
+  Assets = [];
+
   /*@ngInject*/
-  constructor() {
-    this.message = 'Hello';
+  constructor($http, $scope) {
+    this.$http = $http;
+  }
+
+  $onInit() {
+    this.$http.get('/api/assets')
+      .then(response => {
+        this.Assets = response.data;
+        console.log(this.Assets);
+      });
   }
 }
 
@@ -16,7 +26,7 @@ export default angular.module('rfidServerAppApp.asset', [uiRouter])
   .config(routes)
   .component('asset', {
     template: require('./asset.html'),
-    controller: AssetComponent,
+    controller: AssetController,
     controllerAs: 'assetCtrl'
   })
   .name;
