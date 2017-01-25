@@ -4,28 +4,27 @@ const angular = require('angular');
 const uiRouter = require('angular-ui-router');
 
 import routes from './asset.routes';
+import assetLoc from './assetLoc';
 
 export class AssetController {
-  Assets = [];
-
+  
   /*@ngInject*/
   constructor($http, $scope) {
     this.$http = $http;
   }
 
   $onInit() {
-    this.$http.get('/api/assets')
+    this.$http.get('/api/assets/loc')
       .then(response => {
-        this.Assets = response.data;
-        console.log(this.Assets);
+        this.locations = response.data;
       });
   }
 }
 
-export default angular.module('rfidServerAppApp.asset', [uiRouter])
+export default angular.module('rfidServerAppApp.asset', [uiRouter, assetLoc])
   .config(routes)
   .component('asset', {
-    template: require('./asset.html'),
+    template: require('./locations.html'),
     controller: AssetController,
     controllerAs: 'assetCtrl'
   })

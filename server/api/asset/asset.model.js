@@ -18,7 +18,6 @@ var RFIDTagSchema = new mongoose.Schema({
     }
 });
 
-
 var AssetSchema = new mongoose.Schema({
   data : HighwaySignSchema,
   tag : RFIDTagSchema

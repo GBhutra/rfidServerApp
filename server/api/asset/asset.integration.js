@@ -69,6 +69,29 @@ describe('Asset API:', function(done) {
     });
   });
 
+
+  describe('GET /api/assets/loc', function() {
+    var locations;
+    beforeEach(function(done) {
+      request(app)
+        .get('/api/assets/loc')
+        .set('authorization', `Bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          if(err) {
+            return done(err);
+          }
+          locations = res.body;
+          done();
+        });
+    });
+    
+    it('should respond with JSON array', function() {
+      expect(locations).to.be.instanceOf(Array);
+    });
+  });
+
   describe('POST /api/assets', function() {
     beforeEach(function(done) {
       request(app)
@@ -119,6 +142,34 @@ describe('Asset API:', function(done) {
     it('should respond with the requested asset', function() {
       expect(asset.tag.epcVal).to.equal('0xe200210020005b4d153e0272');
     });
+  });
+
+  describe('GET /api/assets/loc/:id', function() {
+    var assets;
+
+    beforeEach(function(done) {
+      request(app)
+        .get(`/api/assets/loc/${newAsset.data.location}`)
+        .set('authorization', `Bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          if(err) {
+            return done(err);
+          }
+          assets = res.body;
+          done();
+        });
+    });
+
+    afterEach(function() {
+      assets = {};
+    });
+
+    it('should respond with JSON array', function() {
+      expect(assets).to.be.instanceOf(Array);
+    });
+    
   });
 
   describe('PUT /api/assets/:id', function() {

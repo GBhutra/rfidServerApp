@@ -6,6 +6,8 @@ var proxyquire = require('proxyquire').noPreserveCache();
 
 var assetCtrlStub = {
   index: 'assetCtrl.index',
+  locationIndex: 'assetCtrl.locationIndex',
+  locationAssetIndex: 'assetCtrl.locationAssetIndex',
   show: 'assetCtrl.show',
   create: 'assetCtrl.create',
   upsert: 'assetCtrl.upsert',
@@ -24,9 +26,6 @@ var routerStub = {
 var authServiceStub = {
   isAuthenticated() {
     return 'authService.isAuthenticated';
-  },
-  hasRole(role) {
-    return `authService.hasRole.${role}`;
   }
 };
 
@@ -54,6 +53,14 @@ describe('Asset API Router:', function() {
     });
   });
 
+  describe('GET /api/assets/loc', function() {
+    it('should verify authentication and route to asset.controller.locationIndex', function() {
+      expect(routerStub.get
+        .withArgs('/loc', 'authService.isAuthenticated', 'assetCtrl.locationIndex')
+        ).to.have.been.calledOnce;
+    });
+  });
+
   describe('GET /api/assets/:id', function() {
     it('should verify authentication and route to asset.controller.show', function() {
       expect(routerStub.get
@@ -62,7 +69,13 @@ describe('Asset API Router:', function() {
     });
   });
 
-  
+  describe('GET /api/assets/loc/:id', function() {
+    it('should verify authentication and route to asset.controller.locationAssetIndex', function() {
+      expect(routerStub.get
+        .withArgs('/loc/:id', 'authService.isAuthenticated', 'assetCtrl.locationAssetIndex')
+        ).to.have.been.calledOnce;
+    });
+  });
 
   describe('POST /api/assets', function() {
     it('should verify authentication and route to asset.controller.create', function() {

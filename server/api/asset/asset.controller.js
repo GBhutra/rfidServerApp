@@ -1,6 +1,7 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
  * GET     /api/assets              ->  index
+ * GET     /api/assets/loc          ->  index of locations
  * POST    /api/assets              ->  create
  * GET     /api/assets/:id          ->  show
  * PUT     /api/assets/:id          ->  upsert
@@ -70,9 +71,24 @@ export function index(req, res) {
     .catch(handleError(res));
 }
 
+// Gets a list of Locations
+export function locationIndex(req, res) {
+  return Asset.distinct("data.location").exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
 // Gets a single Asset from the DB
 export function show(req, res) {
   return Asset.findById(req.params.id).exec()
+    .then(handleEntityNotFound(res))
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+// Gets a list of Asset belonging to the same location from the DB
+export function locationAssetIndex(req, res) {
+  return Asset.find({"data.location":req.params.id}).exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
