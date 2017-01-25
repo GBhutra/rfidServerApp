@@ -31,12 +31,13 @@ import './app.css';
 
 // New routes, controllers and other stuff added here 
 import dashboard from './dashboard/dashboard.component';
+import assets from './assets';
 //-----------------------END---------------------//
 
 
 
 angular.module('rfidServerAppApp', [ngCookies, ngResource, ngSanitize, 'btford.socket-io', uiRouter,
-  uiBootstrap, _Auth, account, admin, navbar, footer, main, dashboard, constants, socket, util
+  uiBootstrap, _Auth, account, admin, navbar, footer, main, dashboard, assets, constants, socket, util
 ])
   .config(routeConfig)
   .run(function($rootScope, $location, Auth) {

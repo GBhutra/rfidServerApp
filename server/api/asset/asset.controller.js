@@ -2,6 +2,7 @@
  * Using Rails-like standard naming convention for endpoints.
  * GET     /api/assets              ->  index
  * GET     /api/assets/loc          ->  index of locations
+ * GET     /api/assets/nums         ->  number of tagged, untagged and total assets
  * POST    /api/assets              ->  create
  * GET     /api/assets/:id          ->  show
  * PUT     /api/assets/:id          ->  upsert
@@ -74,6 +75,13 @@ export function index(req, res) {
 // Gets a list of Locations
 export function locationIndex(req, res) {
   return Asset.distinct("data.location").exec()
+    .then(respondWithResult(res))
+    .catch(handleError(res));
+}
+
+// Gets the number of tagged, untagged and total assets
+export function numbers(req, res) {
+  return Asset.count().exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 }

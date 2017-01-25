@@ -8,6 +8,7 @@ var assetCtrlStub = {
   index: 'assetCtrl.index',
   locationIndex: 'assetCtrl.locationIndex',
   locationAssetIndex: 'assetCtrl.locationAssetIndex',
+  numbers: 'assetCtrl.numbers',
   show: 'assetCtrl.show',
   create: 'assetCtrl.create',
   upsert: 'assetCtrl.upsert',
@@ -57,6 +58,14 @@ describe('Asset API Router:', function() {
     it('should verify authentication and route to asset.controller.locationIndex', function() {
       expect(routerStub.get
         .withArgs('/loc', 'authService.isAuthenticated', 'assetCtrl.locationIndex')
+        ).to.have.been.calledOnce;
+    });
+  });
+
+  describe('GET /api/assets/nums', function() {
+    it('should verify authentication and route to asset.controller.numbers', function() {
+      expect(routerStub.get
+        .withArgs('/nums', 'authService.isAuthenticated', 'assetCtrl.numbers')
         ).to.have.been.calledOnce;
     });
   });

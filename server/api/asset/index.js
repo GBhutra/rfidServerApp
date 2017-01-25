@@ -8,6 +8,7 @@ var router = new Router();
 
 router.get('/', auth.isAuthenticated(),controller.index);
 router.get('/loc', auth.isAuthenticated(),controller.locationIndex);
+router.get('/nums', auth.isAuthenticated(),controller.numbers);
 router.get('/loc/:id', auth.isAuthenticated(),controller.locationAssetIndex);
 router.get('/:id', auth.isAuthenticated(),controller.show);
 router.post('/', auth.isAuthenticated(),controller.create);

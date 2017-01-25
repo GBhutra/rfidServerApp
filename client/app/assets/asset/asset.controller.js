@@ -1,9 +1,6 @@
 'use strict';
-const angular = require('angular');
 
-/*@ngInject*/
-export default class AssetLocController {
-
+export default class AssetController {
   /*@ngInject*/
   constructor($http, $scope, $stateParams) {
     this.$http = $http;
@@ -12,12 +9,10 @@ export default class AssetLocController {
 
   $onInit() {
     console.log(this.$stateParams);
-     $http.get('/api/assets/loc/$stateParams')
+    var route = '/api/assets/'+this.$stateParams.id;
+    this.$http.get(route)
       .then(response => {
-        this.assets = response.data;
-        console.log(assets);
+        this.asset = response.data;
       });
   }
-
 }
-

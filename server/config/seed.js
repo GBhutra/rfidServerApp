@@ -80,6 +80,33 @@ User.find({}).remove()
 		{
 			data:{location:"Riverside",signText:'Street: Sixth St',image:'5',lat:'30.637929',lon:'-96.4678'},
 			tag:{epcVal:'0xe200210020005b45153c0272'}
+		},
+    {
+			"data":{"location":"Riverside","signText":"Street: Bryan Rd","image":"6","lat":"30.635671","lon":"-96.4678"},
+			"tag":{"epcVal":"0xe20021002000558213f70272"}
+		},
+		{
+			"data":{"location":"Riverside","signText":"Street: Seventh St","image":"7","lat":"30.635671","lon":"-96.4678"},
+			"tag":{"epcVal":"0xe20021002000549513b20272"}
+		},
+		{
+			"data":{"location":"Riverside","signText":"Yield","image":"8","lat":"30.635671","lon":"-96.4678"},
+			"tag":{"epcVal":"0xe2002100200050c315120272"}
+		},
+		{
+			"data":{"location":"Riverside","signText":"Street: Project Dr","image":"9","lat":"30.633712","lon":"-96.4727"},
+			"tag":{"epcVal":"0xe200210020005aca14610272"}
+		},
+		{
+			"data":{"location":"Riverside","signText":"Street: Avenue B","image":"10","lat":"30.633712","lon":"-96.4727"},
+			"tag":{"epcVal":"0xe20021002000571915260272"}
+		},
+		{
+			"data":{"location":"Riverside","signText":"Street: Stirling Dr","image":"11","lat":"30.633164","lon":"-96.4727"},
+			"tag":{"epcVal":"0xe200210020005396139f0272"}
+		},
+		{
+			"data":{"location":"Riverside","signText":"Street: Avenue B","image":"12","lat":"30.633164","lon":"-96.4727"}
 		})
     .then(() => {
       console.log('finished populating assets');

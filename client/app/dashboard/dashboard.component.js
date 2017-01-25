@@ -7,8 +7,16 @@ import routes from './dashboard.routes';
 
 export class DashboardComponent {
   /*@ngInject*/
-  constructor() {
+  constructor($http) {
     this.message = 'Hello';
+    this.$http = $http;
+  }
+
+  $onInit() {
+    this.$http.get('/api/assets/nums')
+      .then(response => {
+        this.numAssets = response.data;
+      });
   }
 }
 
