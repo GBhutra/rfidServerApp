@@ -15,7 +15,8 @@ describe('User API:', function() {
       user = new User({
         name: 'Fake User',
         email: 'test@example.com',
-        password: 'password'
+        password: 'password',
+        approved: true
       });
 
       return user.save();

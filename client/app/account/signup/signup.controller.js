@@ -29,7 +29,8 @@ export default class SignupController {
       })
         .then(() => {
           // Account created, redirect to home
-          this.$state.go('main');
+          Auth.logout();
+          this.message = "Account Created! Contact admin for access";
         })
         .catch(err => {
           err = err.data;

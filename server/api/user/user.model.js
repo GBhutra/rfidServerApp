@@ -19,6 +19,10 @@ var UserSchema = new Schema({
     type: String,
     required: true
   },
+  approved: {
+    type: Boolean,
+    default: false
+  },
   provider: String,
   salt: String
 });

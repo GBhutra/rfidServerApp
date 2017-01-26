@@ -99,6 +99,29 @@ export function changePassword(req, res) {
 }
 
 /**
+ * Admin changes approval of a user
+ */
+export function approve(req, res) {
+  var userId = req.body._id;
+  var newApproval = req.body.approval;
+  console.log("\n\n Approval func :"+newApproval);
+  return User.findById(userId).exec()
+    .then(user => {
+      console.log("\n\n Approval func User:"+user);
+      if(user) {
+        user.approved = newApproval;
+        return user.save()
+          .then(() => {
+            res.status(204).end();
+          })
+          .catch(validationError(res));
+      } else {
+        return res.status(403).end();
+      }
+    });
+}
+
+/**
  * Get my info
  */
 export function me(req, res, next) {

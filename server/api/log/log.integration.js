@@ -20,7 +20,8 @@ describe('Log API:', function() {
         name: 'Fake User',
         email: 'test@example.com',
         role: 'admin',
-        password: 'password'
+        password: 'password',
+        approved: true
       });
 
       return user.save();

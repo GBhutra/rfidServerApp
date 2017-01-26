@@ -10,7 +10,8 @@ var userCtrlStub = {
   me: 'userCtrl.me',
   changePassword: 'userCtrl.changePassword',
   show: 'userCtrl.show',
-  create: 'userCtrl.create'
+  create: 'userCtrl.create',
+  approve: 'userCtrl.approve'
 };
 
 var authServiceStub = {
@@ -73,6 +74,14 @@ describe('User API Router:', function() {
     it('should be authenticated and route to user.controller.changePassword', function() {
       expect(routerStub.put
         .withArgs('/:id/password', 'authService.isAuthenticated', 'userCtrl.changePassword')
+        ).to.have.been.calledOnce;
+    });
+  });
+
+  describe('PUT /api/users/:id/approve', function() {
+    it('should verify admin role and route to user.controller.approve', function() {
+      expect(routerStub.put
+        .withArgs('/:id/approve', 'authService.hasRole.admin', 'userCtrl.approve')
         ).to.have.been.calledOnce;
     });
   });

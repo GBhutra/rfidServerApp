@@ -17,6 +17,12 @@ export function UserResource($resource) {
       params: {
         id: 'me'
       }
+    },
+    setApproval: {
+      method: 'PUT',
+      params: {
+        id: 'approve'
+      }
     }
   });
 }

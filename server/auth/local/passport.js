@@ -11,6 +11,11 @@ function localAuthenticate(User, email, password, done) {
           message: 'This email is not registered.'
         });
       }
+      if (!user.approved) {
+        return done(null, false, {
+          message: 'This email is not approved yet. Please contact Admin for access'
+        });
+      } 
       user.authenticate(password, function(authError, authenticated) {
         if(authError) {
           return done(authError);
