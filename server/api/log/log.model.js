@@ -14,8 +14,8 @@ var HighwaySignLogSchema = new mongoose.Schema({
 var RFIDTagSchema = new mongoose.Schema({
    epcVal : {
         type:String, 
-        required: true, 
-        unique: true
+        required: true,
+        unique: false
     }
 });
 

@@ -15,7 +15,9 @@ export class DashboardComponent {
   $onInit() {
     this.$http.get('/api/assets/nums')
       .then(response => {
-        this.numAssets = response.data;
+        this.numAssets = response.data.numAssets;
+        this.numTags = response.data.numTags;
+        this.numUntaggedAssets = this.numAssets - this.numTags;
       });
   }
 }

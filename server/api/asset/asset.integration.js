@@ -69,6 +69,29 @@ describe('Asset API:', function(done) {
     });
   });
 
+  describe('GET /api/assets/nums', function() {
+    var assets;
+    beforeEach(function(done) {
+      request(app)
+        .get('/api/assets/nums')
+        .set('authorization', `Bearer ${token}`)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          if(err) {
+            return done(err);
+          }
+          assets = res.body;
+          console.log(assets);
+          done();
+        });
+    });
+    
+    it('should respond with a JSON Object', function() {
+      expect(assets).to.be.instanceOf(Object);
+    });
+  });
+
 
   describe('GET /api/assets/loc', function() {
     var locations;

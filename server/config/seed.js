@@ -7,6 +7,7 @@
 import Thing from '../api/thing/thing.model';
 import User from '../api/user/user.model';
 import Asset from '../api/asset/asset.model';
+import Log from '../api/log/log.model';
 
 Thing.find({}).remove()
   .then(() => {
@@ -110,5 +111,57 @@ User.find({}).remove()
 		})
     .then(() => {
       console.log('finished populating assets');
+    });
+  });
+
+  Log.find({}).remove()
+  .then(() => {
+    var d = new Date(100000);
+    Log.create({
+			logData:{location:"Riverside",signText:'Stop',date: d,lat:'30.639117',lon:'-96.4678', readCount:'0'},
+			tag:{epcVal:'0xe200210020005b4d153e0272'}
+		},
+    {
+			logData:{location:"Riverside",signText:'Stop',date: d,lat:'30.639117',lon:'-96.4678', readCount:'3'},
+			tag:{epcVal:'0xe200210020005b4d153e0272'}
+		},
+    {
+			logData:{location:"Riverside",signText:'Stop',date: d,lat:'30.639117',lon:'-96.4678', readCount:'7'},
+			tag:{epcVal:'0xe200210020005b4d153e0272'}
+		},
+    {
+			logData:{location:"Riverside",signText:'Stop',date: d,lat:'30.639117',lon:'-96.4678', readCount:'7'},
+			tag:{epcVal:'0xe200210020005b4d153e0272'}
+		},
+    {
+			logData:{location:"Riverside",signText:'Stop',date: d,lat:'30.639117',lon:'-96.4678', readCount:'7'},
+			tag:{epcVal:'0xe200210020005b4d153e0272'}
+		},
+    {
+			logData:{location:"Riverside",signText:'Stop',date: d,lat:'30.639117',lon:'-96.4678', readCount:'6'},
+			tag:{epcVal:'0xe200210020005b4d153e0272'}
+		},
+    {
+			logData:{location:"Riverside",signText:'Stop',date: d,lat:'30.639117',lon:'-96.4678', readCount:'5'},
+			tag:{epcVal:'0xe200210020005b4d153e0272'}
+		},
+		{
+			logData:{location:"Riverside",signText:'Street: Stirling Dr',date: d, lat:'30.633164', lon:'-96.4727', readCount:'8'},
+			tag:{epcVal:'0xe200210020005396139f0272'}
+		},
+    {
+			logData:{location:"Riverside",signText:'Street: Stirling Dr',date: d, lat:'30.633164', lon:'-96.4727', readCount:'8'},
+			tag:{epcVal:'0xe200210020005396139f0272'}
+		},
+    {
+			logData:{location:"Riverside",signText:'Street: Stirling Dr',date: d, lat:'30.633164', lon:'-96.4727', readCount:'8'},
+			tag:{epcVal:'0xe200210020005396139f0272'}
+		},
+    {
+			logData:{location:"Riverside",signText:'Street: Stirling Dr',date: d, lat:'30.633164', lon:'-96.4727', readCount:'8'},
+			tag:{epcVal:'0xe200210020005396139f0272'}
+		})
+    .then(() => {
+      console.log('finished populating logs');
     });
   });

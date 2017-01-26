@@ -75,14 +75,25 @@ export function index(req, res) {
 // Gets a list of Locations
 export function locationIndex(req, res) {
   return Asset.distinct("data.location").exec()
+    .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
 // Gets the number of tagged, untagged and total assets
 export function numbers(req, res) {
+  var result = {}; 
+  result.numAssets = 0;
+  result.numTags = 0;
   return Asset.count().exec()
-    .then(respondWithResult(res))
+    .then(function  (numAssets) {
+      Asset.count({tag: {$exists: false}}).exec()
+      .then(function(numTags) {
+        result.numAssets = numAssets;
+        result.numTags = numTags;
+        return res.status(200).json(result);
+      }) 
+    })
     .catch(handleError(res));
 }
 
@@ -94,7 +105,7 @@ export function show(req, res) {
     .catch(handleError(res));
 }
 
-// Gets a list of Asset belonging to the same location from the DB
+// Gets a list of Assets belonging to the same location from the DB
 export function locationAssetIndex(req, res) {
   return Asset.find({"data.location":req.params.id}).exec()
     .then(handleEntityNotFound(res))
