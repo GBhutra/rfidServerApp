@@ -1,15 +1,75 @@
 'use strict';
 const angular = require('angular');
-
 const uiRouter = require('angular-ui-router');
-
 import routes from './dashboard.routes';
+import nvd3 from 'angular-nvd3';
 
 export class DashboardComponent {
+  awesomeThings = [];
   /*@ngInject*/
-  constructor($http) {
-    this.message = 'Hello';
+  constructor($http, $scope, socket) {
     this.$http = $http;
+    this.socket = socket;
+
+    $scope.$on('$destroy', function() {
+      socket.unsyncUpdates('thing');
+    });
+
+    $scope.options = {
+          chart: {
+              type: 'pieChart',
+              height: 450,
+              donut: true,
+              x: function(d){return d.key;},
+              y: function(d){return d.y;},
+              showLabels: true,
+
+              pie: {
+                  startAngle: function(d) { return d.startAngle/2 -Math.PI/2 },
+                  endAngle: function(d) { return d.endAngle/2 -Math.PI/2 }
+              },
+              duration: 500,
+              legend: {
+                  margin: {
+                      top: 5,
+                      right: 140,
+                      bottom: 5,
+                      left: 0
+                  }
+              }
+          }
+      };
+
+        $scope.data = [
+            {
+                key: "One",
+                y: 5
+            },
+            {
+                key: "Two",
+                y: 2
+            },
+            {
+                key: "Three",
+                y: 9
+            },
+            {
+                key: "Four",
+                y: 7
+            },
+            {
+                key: "Five",
+                y: 4
+            },
+            {
+                key: "Six",
+                y: 3
+            },
+            {
+                key: "Seven",
+                y: .5
+            }
+        ];
   }
 
   $onInit() {
@@ -18,6 +78,12 @@ export class DashboardComponent {
         this.numAssets = response.data.numAssets;
         this.numTags = response.data.numTags;
         this.numUntaggedAssets = this.numAssets - this.numTags;
+      });
+
+    this.$http.get('/api/things')
+      .then(response => {
+        this.awesomeThings = response.data;
+        this.socket.syncUpdates('thing', this.awesomeThings);
       });
   }
 }
