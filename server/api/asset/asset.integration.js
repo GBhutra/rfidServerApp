@@ -64,7 +64,7 @@ describe('Asset API:', function(done) {
           done();
         });
     });
-    
+
     it('should respond with JSON array', function() {
       expect(assets).to.be.instanceOf(Array);
     });
@@ -87,7 +87,7 @@ describe('Asset API:', function(done) {
           done();
         });
     });
-    
+
     it('should respond with a JSON Object', function() {
       expect(assets).to.be.instanceOf(Object);
     });
@@ -110,7 +110,7 @@ describe('Asset API:', function(done) {
           done();
         });
     });
-    
+
     it('should respond with JSON array', function() {
       expect(locations).to.be.instanceOf(Array);
     });
@@ -193,7 +193,7 @@ describe('Asset API:', function(done) {
     it('should respond with JSON array', function() {
       expect(assets).to.be.instanceOf(Array);
     });
-    
+
   });
 
   describe('PUT /api/assets/:id', function() {

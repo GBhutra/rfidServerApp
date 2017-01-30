@@ -21,6 +21,12 @@ var routerStub = {
   delete: sinon.spy()
 };
 
+var authServiceStub = {
+  isAuthenticated() {
+    return 'authService.isAuthenticated';
+  }
+};
+
 // require the index with our stubbed out modules
 var thingIndex = proxyquire('./index.js', {
   express: {
@@ -28,7 +34,8 @@ var thingIndex = proxyquire('./index.js', {
       return routerStub;
     }
   },
-  './thing.controller': thingCtrlStub
+  './thing.controller': thingCtrlStub,
+  '../../auth/auth.service': authServiceStub
 });
 
 describe('Thing API Router:', function() {
@@ -37,49 +44,49 @@ describe('Thing API Router:', function() {
   });
 
   describe('GET /api/things', function() {
-    it('should route to thing.controller.index', function() {
+    it('should verify authentication and route to thing.controller.index', function() {
       expect(routerStub.get
-        .withArgs('/', 'thingCtrl.index')
+        .withArgs('/', 'authService.isAuthenticated', 'thingCtrl.index')
         ).to.have.been.calledOnce;
     });
   });
 
   describe('GET /api/things/:id', function() {
-    it('should route to thing.controller.show', function() {
+    it('should verify authentication and route to thing.controller.show', function() {
       expect(routerStub.get
-        .withArgs('/:id', 'thingCtrl.show')
+        .withArgs('/:id', 'authService.isAuthenticated', 'thingCtrl.show')
         ).to.have.been.calledOnce;
     });
   });
 
   describe('POST /api/things', function() {
-    it('should route to thing.controller.create', function() {
+    it('should verify authentication and route to thing.controller.create', function() {
       expect(routerStub.post
-        .withArgs('/', 'thingCtrl.create')
+        .withArgs('/', 'authService.isAuthenticated', 'thingCtrl.create')
         ).to.have.been.calledOnce;
     });
   });
 
   describe('PUT /api/things/:id', function() {
-    it('should route to thing.controller.upsert', function() {
+    it('should verify authentication and route to thing.controller.upsert', function() {
       expect(routerStub.put
-        .withArgs('/:id', 'thingCtrl.upsert')
+        .withArgs('/:id', 'authService.isAuthenticated', 'thingCtrl.upsert')
         ).to.have.been.calledOnce;
     });
   });
 
   describe('PATCH /api/things/:id', function() {
-    it('should route to thing.controller.patch', function() {
+    it('should verify authentication and route to thing.controller.patch', function() {
       expect(routerStub.patch
-        .withArgs('/:id', 'thingCtrl.patch')
+        .withArgs('/:id', 'authService.isAuthenticated', 'thingCtrl.patch')
         ).to.have.been.calledOnce;
     });
   });
 
   describe('DELETE /api/things/:id', function() {
-    it('should route to thing.controller.destroy', function() {
+    it('should verify authentication and route to thing.controller.destroy', function() {
       expect(routerStub.delete
-        .withArgs('/:id', 'thingCtrl.destroy')
+        .withArgs('/:id', 'authService.isAuthenticated', 'thingCtrl.destroy')
         ).to.have.been.calledOnce;
     });
   });

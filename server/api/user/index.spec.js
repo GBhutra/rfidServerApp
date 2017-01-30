@@ -78,10 +78,10 @@ describe('User API Router:', function() {
     });
   });
 
-  describe('PUT /api/users/:id/approve', function() {
+  describe('PUT /api/users/approve', function() {
     it('should verify admin role and route to user.controller.approve', function() {
       expect(routerStub.put
-        .withArgs('/:id/approve', 'authService.hasRole.admin', 'userCtrl.approve')
+        .withArgs('/approve', 'authService.hasRole.admin', 'userCtrl.approve')
         ).to.have.been.calledOnce;
     });
   });

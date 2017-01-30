@@ -3,6 +3,7 @@
  */
 'use strict';
 
+import User from '../api/user/user.model';
 // import config from './environment';
 
 // When the user disconnects.. perform this
@@ -16,8 +17,6 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
-  //require('../api/log/log.socket').register(socket);
-  //require('../api/asset/asset.socket').register(socket);
   require('../api/thing/thing.socket').register(socket);
 }
 
@@ -37,17 +36,51 @@ export default function(socketio) {
   //   handshake: true
   // }));
 
+  /*require('socketio-auth')(socketio, {
+  authenticate: function (socket, data, callback) {
+    if (!data.email || !data.password )
+      return callback(new Error("Need both email and passowrd for authentication ! "));
+    User.findOne({
+      email: data.email.toLowerCase()
+    }).exec()
+      .then(user => {
+        if(!user) {
+          return callback(new Error("User not found"));
+        }
+        if (!user.approved) {
+          return callback(new Error("This email is not approved yet. Please contact Admin for access"));
+        }
+        user.authenticate(data.password, function(authError, authenticated) {
+          if(authError) {
+            return callback(new Error("Authentication error found"));
+          }
+          if(!authenticated) {
+            return callback(new Error("In correct password"));
+          } else {
+            return callback(null, user);
+          }
+        });
+      })
+      .catch(err => callback(new Error("User not found")));
+    },
+    timeout : 5000
+  });*/
+
   socketio.on('connection', function(socket) {
     socket.address = `${socket.request.connection.remoteAddress}:${socket.request.connection.remotePort}`;
-
     socket.connectedAt = new Date();
 
     socket.log = function(...data) {
       console.log(`SocketIO ${socket.nsp.name} [${socket.address}]`, ...data);
     };
 
+    socket.on('thing', function(data) {
+      require('../api/thing/thing.socket').activate(socket, data);
+    });
+
     // Call onDisconnect.
     socket.on('disconnect', () => {
+      require('../api/thing/thing.socket').deActivate(socket);
       onDisconnect(socket);
       socket.log('DISCONNECTED');
     });

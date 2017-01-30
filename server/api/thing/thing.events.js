@@ -17,6 +17,7 @@ var events = {
   remove: 'remove'
 };
 
+
 // Register the event emitter to the model events
 for(var e in events) {
   let event = events[e];
