@@ -15,61 +15,24 @@ export class DashboardComponent {
       socket.unsyncUpdates('thing');
     });
 
-    $scope.options = {
+    $scope.donutChart = {
           chart: {
               type: 'pieChart',
-              height: 450,
-              donut: true,
+              height: 400,
               x: function(d){return d.key;},
               y: function(d){return d.y;},
-              showLabels: true,
-
-              pie: {
-                  startAngle: function(d) { return d.startAngle/2 -Math.PI/2 },
-                  endAngle: function(d) { return d.endAngle/2 -Math.PI/2 }
-              },
-              duration: 500,
+              showLabels: false,
               legend: {
                   margin: {
                       top: 5,
-                      right: 140,
+                      right: 10,
                       bottom: 5,
                       left: 0
                   }
               }
           }
       };
-
-        $scope.data = [
-            {
-                key: "One",
-                y: 5
-            },
-            {
-                key: "Two",
-                y: 2
-            },
-            {
-                key: "Three",
-                y: 9
-            },
-            {
-                key: "Four",
-                y: 7
-            },
-            {
-                key: "Five",
-                y: 4
-            },
-            {
-                key: "Six",
-                y: 3
-            },
-            {
-                key: "Seven",
-                y: .5
-            }
-        ];
+      this.$scope = $scope;
   }
 
   $onInit() {
@@ -78,12 +41,32 @@ export class DashboardComponent {
         this.numAssets = response.data.numAssets;
         this.numTags = response.data.numTags;
         this.numUntaggedAssets = this.numAssets - this.numTags;
+        this.$scope.assetData = [{
+          key: "Un-Tagged Assets",
+          y: this.numUntaggedAssets
+        },
+        {
+          key: "Assets",
+          y: this.numAssets
+        },
+        {
+          key: "Total Tags",
+          y: this.numTags
+        }];
       });
 
     this.$http.get('/api/things')
       .then(response => {
         this.awesomeThings = response.data;
         this.socket.syncUpdates('thing', this.awesomeThings);
+        this.$scope.devicesData = [{
+          key: "Online",
+          y: 10
+        },
+        {
+          key: "Offline",
+          y: 30
+        }];
       });
   }
 }
