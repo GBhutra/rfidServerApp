@@ -9,6 +9,7 @@ import 'angular-socket-io';
 
 import uiRouter from 'angular-ui-router';
 import uiBootstrap from 'angular-ui-bootstrap';
+import nvd3 from 'angular-nvd3';
 // import ngMessages from 'angular-messages';
 // import ngValidationMatch from 'angular-validation-match';
 
@@ -29,7 +30,7 @@ import socket from '../components/socket/socket.service';
 
 import './app.css';
 
-// New routes, controllers and other stuff added here 
+// New routes, controllers and other stuff added here
 import dashboard from './dashboard/dashboard.component';
 import assets from './assets';
 //-----------------------END---------------------//
@@ -37,8 +38,7 @@ import assets from './assets';
 
 
 angular.module('rfidServerAppApp', [ngCookies, ngResource, ngSanitize, 'btford.socket-io', uiRouter,
-  uiBootstrap, _Auth, account, admin, navbar, footer, main, dashboard, assets, constants, socket, util
-])
+  uiBootstrap, _Auth, account, admin, navbar, footer, main, dashboard, assets, constants, socket, util, nvd3])
   .config(routeConfig)
   .run(function($rootScope, $location, Auth) {
     'ngInject';

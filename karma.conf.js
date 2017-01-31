@@ -56,7 +56,9 @@ module.exports = function(config) {
       require('karma-phantomjs-launcher'),
       require('karma-script-launcher'),
       require('karma-webpack'),
-      require('karma-sourcemap-loader')
+      require('karma-sourcemap-loader'),
+
+      require('karma-safari-launcher')
     ],
 
     // list of files / patterns to exclude
@@ -89,7 +91,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
+    browsers: ['Safari'],
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit

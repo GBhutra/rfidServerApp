@@ -3,17 +3,57 @@
 /* globals describe, expect, it, beforeEach, afterEach */
 
 var app = require('../..');
+import User from '../user/user.model';
 import request from 'supertest';
 
 var newThing;
 
 describe('Thing API:', function() {
+  var user;
+  var token;
+
+  // Clear users before testing
+  before(function() {
+    return User.remove().then(function() {
+      user = new User({
+        name: 'Fake User',
+        email: 'test@example.com',
+        password: 'password',
+        approved: true
+      });
+
+      return user.save();
+    });
+  });
+
+  // Get the token
+  before(function(done) {
+      request(app)
+        .post('/auth/local')
+        .send({
+          email: 'test@example.com',
+          password: 'password'
+        })
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end((err, res) => {
+          token = res.body.token;
+          done();
+        });
+    });
+
+  // Clear users after testing
+  after(function() {
+    return User.remove();
+  });
+
   describe('GET /api/things', function() {
     var things;
 
     beforeEach(function(done) {
       request(app)
         .get('/api/things')
+        .set('authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -34,9 +74,12 @@ describe('Thing API:', function() {
     beforeEach(function(done) {
       request(app)
         .post('/api/things')
+        .set('authorization', `Bearer ${token}`)
         .send({
-          name: 'New Thing',
-          info: 'This is the brand new thing!!!'
+          friendlyname: 'New Thing',
+          macAddress: '1234905729507957638753',
+          ipAddress: '192.168.1.20'
+
         })
         .expect(201)
         .expect('Content-Type', /json/)
@@ -50,8 +93,8 @@ describe('Thing API:', function() {
     });
 
     it('should respond with the newly created thing', function() {
-      expect(newThing.name).to.equal('New Thing');
-      expect(newThing.info).to.equal('This is the brand new thing!!!');
+      expect(newThing.friendlyname).to.equal('New Thing');
+      expect(newThing.macAddress).to.equal('1234905729507957638753');
     });
   });
 
@@ -61,6 +104,7 @@ describe('Thing API:', function() {
     beforeEach(function(done) {
       request(app)
         .get(`/api/things/${newThing._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -77,8 +121,8 @@ describe('Thing API:', function() {
     });
 
     it('should respond with the requested thing', function() {
-      expect(thing.name).to.equal('New Thing');
-      expect(thing.info).to.equal('This is the brand new thing!!!');
+      expect(thing.friendlyname).to.equal('New Thing');
+      expect(thing.macAddress).to.equal('1234905729507957638753');
     });
   });
 
@@ -88,9 +132,9 @@ describe('Thing API:', function() {
     beforeEach(function(done) {
       request(app)
         .put(`/api/things/${newThing._id}`)
+        .set('authorization', `Bearer ${token}`)
         .send({
-          name: 'Updated Thing',
-          info: 'This is the updated thing!!!'
+          macAddress: '1234905729507957123753',
         })
         .expect(200)
         .expect('Content-Type', /json/)
@@ -108,13 +152,14 @@ describe('Thing API:', function() {
     });
 
     it('should respond with the updated thing', function() {
-      expect(updatedThing.name).to.equal('Updated Thing');
-      expect(updatedThing.info).to.equal('This is the updated thing!!!');
+      expect(updatedThing.friendlyname).to.equal('New Thing');
+      expect(updatedThing.macAddress).to.equal('1234905729507957123753');
     });
 
     it('should respond with the updated thing on a subsequent GET', function(done) {
       request(app)
         .get(`/api/things/${newThing._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -123,8 +168,8 @@ describe('Thing API:', function() {
           }
           let thing = res.body;
 
-          expect(thing.name).to.equal('Updated Thing');
-          expect(thing.info).to.equal('This is the updated thing!!!');
+          expect(thing.friendlyname).to.equal('New Thing');
+          expect(thing.macAddress).to.equal('1234905729507957123753');
 
           done();
         });
@@ -137,9 +182,9 @@ describe('Thing API:', function() {
     beforeEach(function(done) {
       request(app)
         .patch(`/api/things/${newThing._id}`)
+        .set('authorization', `Bearer ${token}`)
         .send([
-          { op: 'replace', path: '/name', value: 'Patched Thing' },
-          { op: 'replace', path: '/info', value: 'This is the patched thing!!!' }
+          { op: 'replace', path: '/ipAddress', value: '192.168.1.212' }
         ])
         .expect(200)
         .expect('Content-Type', /json/)
@@ -157,8 +202,8 @@ describe('Thing API:', function() {
     });
 
     it('should respond with the patched thing', function() {
-      expect(patchedThing.name).to.equal('Patched Thing');
-      expect(patchedThing.info).to.equal('This is the patched thing!!!');
+      expect(patchedThing.friendlyname).to.equal('New Thing');
+      expect(patchedThing.ipAddress).to.equal('192.168.1.212');
     });
   });
 
@@ -166,6 +211,7 @@ describe('Thing API:', function() {
     it('should respond with 204 on successful removal', function(done) {
       request(app)
         .delete(`/api/things/${newThing._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(204)
         .end(err => {
           if(err) {
@@ -178,6 +224,7 @@ describe('Thing API:', function() {
     it('should respond with 404 when thing does not exist', function(done) {
       request(app)
         .delete(`/api/things/${newThing._id}`)
+        .set('authorization', `Bearer ${token}`)
         .expect(404)
         .end(err => {
           if(err) {

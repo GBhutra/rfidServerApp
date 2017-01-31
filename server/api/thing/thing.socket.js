@@ -5,9 +5,13 @@
 'use strict';
 
 import ThingEvents from './thing.events';
+import Thing from './thing.model';
 
 // Model events to emit
 var events = ['save', 'remove'];
+
+var thingConnections=[];
+
 
 export function register(socket) {
   // Bind model events to socket events
@@ -20,6 +24,41 @@ export function register(socket) {
   }
 }
 
+export function activate(socket, data)  {
+  var conn = thingConnections.find(conn => conn.socket === socket);
+  if (!conn)  {
+      Thing.findOne({'macAddress': data.macAddress}).exec()
+        .then(function(doc) {
+          doc.active = true;
+          doc.save();
+          thingConnections.push({thingId:doc._id, socket: socket});
+        })
+        .catch(function(err){
+          thingConnections.splice(conn);
+        });
+    }
+}
+
+export function deActivate(socket)  {
+  let conn = thingConnections.find(conn => conn.socket === socket);
+  if (conn)  {
+      Thing.findById(conn.thingId).exec()
+        .then(function(doc) {
+          doc.active = false;
+          doc.save();
+          socket.emit()
+          thingConnections.splice(conn);
+        })
+        .catch(function(err){
+          thingConnections.splice(conn);
+        });
+    }
+}
+
+
+function findSocket(socket) {
+  return thingConnections.socket === socket;
+}
 
 function createListener(event, socket) {
   return function(doc) {
