@@ -45,6 +45,7 @@
 /* inject:css */
 @import 'admin/admin.css';
 @import 'dashboard/dashboard.css';
+@import 'logs/logs.css';
 @import 'main/main.css';
 @import '../components/footer/footer.css';
 @import '../components/modal/modal.css';
